@@ -41,7 +41,9 @@ export default function App() {
     }
     
     setTimeout(() => {
-      const link = plan === 'essencial' ? '#CHECKOUT_LINK_BASICO#' : '#CHECKOUT_LINK_COMPLETO#';
+      const link = plan === 'essencial' 
+        ? 'https://ggcheckout.app/checkout/v4/akNASSdlT23O50Jx6P0p' 
+        : 'https://ggcheckout.app/checkout/v4/w8WpOvBkzPNAtTxTOXuE';
       window.location.href = link;
     }, 300);
   };
