@@ -1,0 +1,6 @@
+{
+  "name": "Gin Fácil — O Efeito Bartender",
+  "description": "Uma landing page de alta conversão para o método Efeito Bartender, ensinando a arte de preparar drinks de gin para impressionar.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
