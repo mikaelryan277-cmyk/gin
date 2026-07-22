@@ -23,14 +23,6 @@ export default function App() {
   const [showSticky, setShowSticky] = useState(false);
 
   useEffect(() => {
-    // Meta Pixel Code - Simplified for integration
-    // @ts-ignore
-    window.fbq = window.fbq || function() { (window.fbq.q = window.fbq.q || []).push(arguments) };
-    // @ts-ignore
-    window.fbq('init', '1833545720703515');
-    // @ts-ignore
-    window.fbq('track', 'PageView');
-
     const handleScroll = () => {
       const heroHeight = 600;
       setShowSticky(window.scrollY > heroHeight);
