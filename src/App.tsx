@@ -5,14 +5,10 @@ import {
   ChevronDown, 
   ShieldCheck, 
   Clock, 
-  GlassWater, 
   Sparkles, 
-  HandMetal,
   Smartphone,
   BookOpen,
-  Wine,
-  Music,
-  MessageSquare
+  Wine
 } from 'lucide-react';
 
 // Mockup image path from generation
@@ -100,6 +96,7 @@ export default function App() {
                   src={MOCKUP_IMAGE} 
                   alt="Gin Fácil - O Efeito Bartender" 
                   className="absolute inset-0 w-full h-full object-cover object-center"
+                  fetchpriority="high"
                 />
               </div>
             </motion.div>
@@ -150,6 +147,7 @@ export default function App() {
                   src="https://i.imgur.com/A0Qq7We.jpeg" 
                   alt="Ícone copo Efeito Bartender" 
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
               </div>
               <div className="aspect-square bg-gold rounded-3xl mt-8 overflow-hidden">
@@ -157,6 +155,7 @@ export default function App() {
                   src="https://i.imgur.com/wIZjyc9.jpeg" 
                   alt="Ícone gesto Efeito Bartender" 
                   className="w-full h-full object-cover"
+                  loading="lazy"
                 />
               </div>
             </div>
