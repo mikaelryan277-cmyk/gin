@@ -30,6 +30,10 @@ export default function App() {
 
   const handleCheckout = (plan: 'essencial' | 'completo') => {
     const value = plan === 'essencial' ? 9.90 : 27.90;
+    const link = plan === 'essencial' 
+      ? 'https://ggcheckout.app/checkout/v4/akNASSdlT23O50Jx6P0p' 
+      : 'https://ggcheckout.app/checkout/v4/w8WpOvBkzPNAtTxTOXuE';
+
     // @ts-ignore
     if (window.fbq) {
       // @ts-ignore
@@ -37,9 +41,6 @@ export default function App() {
     }
     
     setTimeout(() => {
-      const link = plan === 'essencial' 
-        ? 'https://ggcheckout.app/checkout/v4/akNASSdlT23O50Jx6P0p' 
-        : 'https://ggcheckout.app/checkout/v4/w8WpOvBkzPNAtTxTOXuE';
       window.location.href = link;
     }, 300);
   };
@@ -283,12 +284,14 @@ export default function App() {
                   <li className="flex items-center gap-2">• Guia de Preparo</li>
                 </ul>
               </div>
-              <button 
-                onClick={() => handleCheckout('essencial')}
-                className="w-full py-3 border border-white/30 rounded-full text-[10px] font-bold text-center uppercase tracking-widest hover:bg-white/10 transition-all"
+              <a 
+                href="https://ggcheckout.app/checkout/v4/akNASSdlT23O50Jx6P0p"
+                id="checkout-btn-basico"
+                onClick={(e) => { e.preventDefault(); handleCheckout('essencial'); }}
+                className="w-full py-3 border border-white/30 rounded-full text-[10px] font-bold text-center uppercase tracking-widest hover:bg-white/10 transition-all flex items-center justify-center"
               >
                 Selecionar
-              </button>
+              </a>
             </div>
 
             {/* Completo */}
@@ -306,12 +309,14 @@ export default function App() {
                   <li className="flex items-center gap-2 text-white/90 text-gold font-bold">• Bônus: Roteiro de Diálogo</li>
                 </ul>
               </div>
-              <button 
-                onClick={() => handleCheckout('completo')}
-                className="w-full py-4 bg-gold text-void rounded-full text-[10px] font-bold text-center uppercase tracking-widest shadow-lg hover:scale-105 transition-all"
+              <a 
+                href="https://ggcheckout.app/checkout/v4/w8WpOvBkzPNAtTxTOXuE"
+                id="checkout-btn-completo"
+                onClick={(e) => { e.preventDefault(); handleCheckout('completo'); }}
+                className="w-full py-4 bg-gold text-void rounded-full text-[10px] font-bold text-center uppercase tracking-widest shadow-lg hover:scale-105 transition-all flex items-center justify-center"
               >
                 COMEÇAR AGORA
-              </button>
+              </a>
             </div>
           </div>
           
@@ -426,12 +431,13 @@ export default function App() {
             exit={{ y: 100 }}
             className="fixed bottom-6 left-6 right-6 z-50 md:hidden"
           >
-            <button 
-              onClick={() => handleCheckout('completo')}
+            <a 
+              href="https://ggcheckout.app/checkout/v4/w8WpOvBkzPNAtTxTOXuE"
+              onClick={(e) => { e.preventDefault(); handleCheckout('completo'); }}
               className="w-full bg-gold text-void py-4 rounded-full font-bold shadow-2xl animate-pulse-gold flex items-center justify-center gap-2"
             >
               Garantir Plano Completo • R$ 27,90
-            </button>
+            </a>
           </motion.div>
         )}
       </AnimatePresence>
