@@ -29,7 +29,7 @@ export default function App() {
   }, []);
 
   const handleCheckout = (plan: 'essencial' | 'completo') => {
-    const value = plan === 'essencial' ? 9.90 : 27.90;
+    const value = plan === 'essencial' ? 14.90 : 27.90;
     const link = plan === 'essencial' 
       ? 'https://ggcheckout.app/checkout/v4/akNASSdlT23O50Jx6P0p' 
       : 'https://ggcheckout.app/checkout/v4/w8WpOvBkzPNAtTxTOXuE';
@@ -277,7 +277,7 @@ export default function App() {
             <div className="w-full md:w-[280px] p-8 rounded-[32px] bg-white/5 border border-white/10 backdrop-blur-xl flex flex-col justify-between min-h-[380px]">
               <div>
                 <div className="text-[10px] uppercase tracking-widest opacity-60 mb-2 font-bold">ESSENCIAL</div>
-                <div className="text-3xl font-bold font-display mb-6">R$ 9,90</div>
+                <div className="text-3xl font-bold font-display mb-6">R$ 14,90</div>
                 <ul className="text-xs space-y-3 opacity-80 mb-8">
                   <li className="flex items-center gap-2">• 5 Receitas base</li>
                   <li className="flex items-center gap-2">• Tabela de Combinação</li>
