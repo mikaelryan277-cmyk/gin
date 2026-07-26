@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { v4 as uuidv4 } from 'uuid';
 import { 
   Check, 
   ChevronDown, 
@@ -8,8 +9,21 @@ import {
   Sparkles, 
   Smartphone,
   BookOpen,
-  Wine
+  Wine,
+  Lock,
+  RotateCcw,
+  Quote,
+  CheckCircle2,
+  Star
 } from 'lucide-react';
+
+// Cookie helper for Meta match quality
+const getCookie = (name: string) => {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(';').shift();
+  return null;
+};
 
 // Mockup image path from generation
 const MOCKUP_IMAGE = 'https://i.imgur.com/CWGtxcY.jpeg';
@@ -17,8 +31,34 @@ const MOCKUP_IMAGE = 'https://i.imgur.com/CWGtxcY.jpeg';
 export default function App() {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [showSticky, setShowSticky] = useState(false);
+  const [isThanksPage, setIsThanksPage] = useState(false);
 
   useEffect(() => {
+    // Check for purchase redirect
+    if (window.location.pathname === '/obrigado') {
+      setIsThanksPage(true);
+      const eventId = uuidv4();
+      
+      // Pixel Purchase
+      // @ts-ignore
+      if (window.fbq) {
+        // @ts-ignore
+        window.fbq('track', 'Purchase', { value: 27.90, currency: 'BRL' }, { eventID: eventId });
+      }
+
+      // CAPI Purchase
+      fetch('/api/meta-event', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          event_name: 'Purchase',
+          event_id: eventId,
+          event_source_url: window.location.href,
+          user_data: { fbp: getCookie('_fbp'), fbc: getCookie('_fbc') },
+          custom_data: { value: 27.90, currency: 'BRL' }
+        })
+      }).catch(console.error);
+    }
     const handleScroll = () => {
       const heroHeight = 600;
       setShowSticky(window.scrollY > heroHeight);
@@ -29,25 +69,77 @@ export default function App() {
   }, []);
 
   const handleCheckout = (plan: 'essencial' | 'completo') => {
-    const value = plan === 'essencial' ? 14.90 : 27.90;
+    const value = plan === 'essencial' ? 9.90 : 27.90;
+    const eventId = uuidv4();
     const link = plan === 'essencial' 
       ? 'https://ggcheckout.app/checkout/v4/akNASSdlT23O50Jx6P0p' 
       : 'https://ggcheckout.app/checkout/v4/w8WpOvBkzPNAtTxTOXuE';
 
+    // Client-Side Pixel Event (InitiateCheckout)
     // @ts-ignore
     if (window.fbq) {
       // @ts-ignore
-      window.fbq('track', 'InitiateCheckout', { value, currency: 'BRL' });
+      window.fbq('track', 'InitiateCheckout', { 
+        value, 
+        currency: 'BRL',
+        content_name: plan === 'essencial' ? 'Plano Essencial' : 'Plano Completo'
+      }, { eventID: eventId });
     }
+
+    // Server-Side CAPI Event
+    fetch('/api/meta-event', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        event_name: 'InitiateCheckout',
+        event_id: eventId,
+        event_source_url: window.location.href,
+        user_data: {
+          fbp: getCookie('_fbp'),
+          fbc: getCookie('_fbc'),
+        },
+        custom_data: {
+          value,
+          currency: 'BRL',
+          content_name: plan === 'essencial' ? 'Plano Essencial' : 'Plano Completo'
+        }
+      })
+    }).catch(console.error);
     
     setTimeout(() => {
       window.location.href = link;
-    }, 300);
+    }, 350);
   };
 
   const scrollToOffer = () => {
     document.getElementById('oferta')?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  if (isThanksPage) {
+    return (
+      <div className="min-h-screen bg-void flex items-center justify-center p-6 text-center">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          className="max-w-md w-full bg-surface p-12 rounded-[40px] border border-gold/20 shadow-2xl"
+        >
+          <div className="w-20 h-20 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-8">
+            <CheckCircle2 size={40} className="text-gold" />
+          </div>
+          <h1 className="text-4xl font-display font-bold mb-4 italic">Obrigado pela confiança!</h1>
+          <p className="text-white/60 mb-8">
+            O seu acesso ao Gin Fácil — O Efeito Bartender foi enviado para o seu e-mail agora mesmo.
+          </p>
+          <a 
+            href="/"
+            className="inline-block bg-gold text-void px-8 py-4 rounded-full font-bold uppercase tracking-widest text-xs hover:scale-105 transition-all"
+          >
+            Voltar para a página
+          </a>
+        </motion.div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-void selection:bg-gold selection:text-void">
@@ -75,7 +167,7 @@ export default function App() {
                   onClick={scrollToOffer}
                   className="bg-void text-white px-10 py-5 rounded-full text-sm font-bold tracking-wide hover:scale-105 active:scale-95 transition-all shadow-xl"
                 >
-                  QUERO APRENDER AGORA
+                  QUERO MEU GUIA AGORA
                 </button>
                 <div className="flex items-center gap-3 cursor-pointer group" onClick={scrollToOffer}>
                   <div className="w-10 h-10 rounded-full border border-void/30 flex items-center justify-center group-hover:bg-void group-hover:text-white transition-colors">
@@ -83,6 +175,13 @@ export default function App() {
                   </div>
                   <span className="text-xs font-bold uppercase tracking-wider">Ver o mecanismo</span>
                 </div>
+              </div>
+              
+              {/* Above the fold trust indicators */}
+              <div className="mt-8 flex items-center gap-4 text-[10px] uppercase font-bold tracking-widest opacity-60">
+                <div className="flex items-center gap-1"><ShieldCheck size={14} className="text-void" /> Compra Segura</div>
+                <div className="w-1 h-1 bg-void/30 rounded-full"></div>
+                <div className="flex items-center gap-1"><Check size={14} className="text-void" /> Acesso Imediato</div>
               </div>
             </motion.div>
             
@@ -97,10 +196,25 @@ export default function App() {
                   src={MOCKUP_IMAGE} 
                   alt="Gin Fácil - O Efeito Bartender" 
                   className="absolute inset-0 w-full h-full object-cover object-center"
-                  fetchpriority="high"
+                  fetchPriority="high"
                 />
               </div>
+
+              {/* Trust Badge Floating */}
+              <div className="absolute -bottom-6 -left-6 bg-gold text-void p-4 rounded-2xl shadow-2xl flex items-center gap-3 z-20 rotate-[-5deg]">
+                <ShieldCheck size={24} />
+                <div className="leading-tight">
+                  <div className="text-[10px] font-bold uppercase">Acesso Imediato</div>
+                  <div className="text-sm font-black">Guia Digital</div>
+                </div>
+              </div>
             </motion.div>
+          </div>
+
+          <div className="mt-12 flex flex-wrap justify-center lg:justify-start gap-8 opacity-60">
+            <div className="flex items-center gap-2"><Lock size={16}/> <span className="text-[10px] uppercase font-bold tracking-widest">Pagamento Seguro</span></div>
+            <div className="flex items-center gap-2"><RotateCcw size={16}/> <span className="text-[10px] uppercase font-bold tracking-widest">7 Dias de Garantia</span></div>
+            <div className="flex items-center gap-2"><CheckCircle2 size={16}/> <span className="text-[10px] uppercase font-bold tracking-widest">Acesso Vitalício</span></div>
           </div>
         </div>
       </section>
@@ -277,7 +391,7 @@ export default function App() {
             <div className="w-full md:w-[280px] p-8 rounded-[32px] bg-white/5 border border-white/10 backdrop-blur-xl flex flex-col justify-between min-h-[380px]">
               <div>
                 <div className="text-[10px] uppercase tracking-widest opacity-60 mb-2 font-bold">ESSENCIAL</div>
-                <div className="text-3xl font-bold font-display mb-6">R$ 14,90</div>
+                <div className="text-3xl font-bold font-display mb-6">R$ 9,90</div>
                 <ul className="text-xs space-y-3 opacity-80 mb-8">
                   <li className="flex items-center gap-2">• 5 Receitas base</li>
                   <li className="flex items-center gap-2">• Tabela de Combinação</li>
@@ -290,7 +404,7 @@ export default function App() {
                 onClick={(e) => { e.preventDefault(); handleCheckout('essencial'); }}
                 className="w-full py-3 border border-white/30 rounded-full text-[10px] font-bold text-center uppercase tracking-widest hover:bg-white/10 transition-all flex items-center justify-center"
               >
-                Selecionar
+                QUERO O ESSENCIAL
               </a>
             </div>
 
@@ -315,32 +429,53 @@ export default function App() {
                 onClick={(e) => { e.preventDefault(); handleCheckout('completo'); }}
                 className="w-full py-4 bg-gold text-void rounded-full text-[10px] font-bold text-center uppercase tracking-widest shadow-lg hover:scale-105 transition-all flex items-center justify-center"
               >
-                COMEÇAR AGORA
+                QUERO O GUIA AGORA
               </a>
             </div>
           </div>
-          
-          <div className="flex items-center justify-center gap-8 mt-12 opacity-40">
-            <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest">
-              <div className="w-2 h-2 bg-gold rounded-full"></div> Compra Segura
+
+          {/* Guarantee Section */}
+          <div className="mt-24 p-8 md:p-12 bg-white/5 rounded-[40px] border border-white/10 flex flex-col md:flex-row items-center gap-8 max-w-4xl mx-auto">
+            <div className="w-32 h-32 flex-shrink-0 bg-gold/10 rounded-full flex items-center justify-center border-4 border-gold/20">
+              <ShieldCheck size={64} className="text-gold" />
             </div>
-            <div className="flex items-center gap-2 text-[10px] font-bold uppercase tracking-widest">
-              <div className="w-2 h-2 bg-gold rounded-full"></div> 7 Dias de Garantia
+            <div className="text-center md:text-left">
+              <h3 className="text-2xl font-display font-bold mb-4 italic">Risco Zero: Garantia Incondicional</h3>
+              <p className="text-white/60 text-sm leading-relaxed">
+                Você tem 7 dias inteiros para testar o método. Se não conseguir preparar o gin perfeito ou achar que o conteúdo não é para você, devolvemos 100% do seu investimento. Sem perguntas, sem burocracia.
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Garantia */}
-      <section className="py-24 bg-surface liquid-wave">
-        <div className="container mx-auto px-6 text-center">
-          <div className="w-20 h-20 bg-gold/10 rounded-full flex items-center justify-center mx-auto mb-8">
-            <ShieldCheck size={40} className="text-gold" />
+      {/* Testimonials */}
+      <section className="py-24 bg-surface">
+        <div className="container mx-auto px-6">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-display font-bold italic mb-4">Aprovado por quem já testou</h2>
+            <div className="flex justify-center gap-1 text-gold">
+              <Star size={16} fill="currentColor" />
+              <Star size={16} fill="currentColor" />
+              <Star size={16} fill="currentColor" />
+              <Star size={16} fill="currentColor" />
+              <Star size={16} fill="currentColor" />
+            </div>
           </div>
-          <h2 className="font-display text-4xl mb-6">Sua satisfação ou seu dinheiro de volta</h2>
-          <p className="text-gray-400 max-w-2xl mx-auto text-lg leading-relaxed">
-            Você tem 7 dias para testar o método. Se achar que não aprendeu nada ou que as dicas não fazem diferença na sua noite, basta pedir o reembolso. Sem perguntas, sem burocracia.
-          </p>
+
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            {[
+              { name: "Lucas M.", text: "O guia mudou o nível dos drinks aqui em casa. As combinações da tabela são geniais." },
+              { name: "Mariana S.", text: "O bônus de diálogo é incrível! Deixa a conversa fluir de um jeito muito natural." },
+              { name: "Ricardo F.", text: "Rápido de ler e direto ao ponto. Valeu cada centavo pela qualidade do Gin que faço agora." }
+            ].map((t, i) => (
+              <div key={i} className="p-8 bg-void/50 rounded-3xl border border-white/5 relative">
+                <Quote size={32} className="text-gold/20 absolute top-6 right-6" />
+                <p className="text-white/80 text-sm mb-6 leading-relaxed">"{t.text}"</p>
+                <div className="font-bold text-xs text-gold uppercase tracking-widest">{t.name}</div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -434,9 +569,9 @@ export default function App() {
             <a 
               href="https://ggcheckout.app/checkout/v4/w8WpOvBkzPNAtTxTOXuE"
               onClick={(e) => { e.preventDefault(); handleCheckout('completo'); }}
-              className="w-full bg-gold text-void py-4 rounded-full font-bold shadow-2xl animate-pulse-gold flex items-center justify-center gap-2"
+              className="w-full bg-gold text-void py-4 rounded-full font-bold shadow-2xl animate-pulse-gold flex items-center justify-center gap-2 uppercase tracking-widest text-[11px]"
             >
-              Garantir Plano Completo • R$ 27,90
+              Quero o Efeito Bartender • R$ 27,90
             </a>
           </motion.div>
         )}
