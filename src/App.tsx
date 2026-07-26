@@ -189,9 +189,9 @@ export default function App() {
               initial={{ opacity: 0, y: 50, scale: 0.9 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               transition={{ duration: 1, delay: 0.2, ease: [0.22, 1, 0.36, 1] }}
-              className="lg:w-1/2 relative flex justify-center lg:justify-end"
+              className="lg:w-1/2 relative flex justify-center lg:justify-end w-full"
             >
-              <div className="relative z-10 w-[380px] h-[480px] bg-surface rounded-[40px] border border-white/20 shadow-2xl overflow-hidden flex flex-col items-center justify-center rotate-3 hover:rotate-0 transition-transform duration-700">
+              <div className="relative z-10 w-full max-w-[320px] xs:max-w-[380px] aspect-[380/480] bg-surface rounded-[32px] md:rounded-[40px] border border-white/20 shadow-2xl overflow-hidden flex flex-col items-center justify-center md:rotate-3 hover:rotate-0 transition-transform duration-700">
                 <img 
                   src={MOCKUP_IMAGE} 
                   alt="Gin Fácil - O Efeito Bartender" 
@@ -201,11 +201,11 @@ export default function App() {
               </div>
 
               {/* Trust Badge Floating */}
-              <div className="absolute -bottom-6 -left-6 bg-gold text-void p-4 rounded-2xl shadow-2xl flex items-center gap-3 z-20 rotate-[-5deg]">
-                <ShieldCheck size={24} />
+              <div className="absolute -bottom-4 -left-2 md:-bottom-6 md:-left-6 bg-gold text-void p-3 md:p-4 rounded-xl md:rounded-2xl shadow-2xl flex items-center gap-2 md:gap-3 z-20 md:rotate-[-5deg]">
+                <ShieldCheck size={20} className="md:w-6 md:h-6" />
                 <div className="leading-tight">
-                  <div className="text-[10px] font-bold uppercase">Acesso Imediato</div>
-                  <div className="text-sm font-black">Guia Digital</div>
+                  <div className="text-[8px] md:text-[10px] font-bold uppercase">Acesso Imediato</div>
+                  <div className="text-xs md:text-sm font-black">Guia Digital</div>
                 </div>
               </div>
             </motion.div>
