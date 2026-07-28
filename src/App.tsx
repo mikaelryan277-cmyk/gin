@@ -69,7 +69,7 @@ export default function App() {
   }, []);
 
   const handleCheckout = (plan: 'essencial' | 'completo') => {
-    const value = plan === 'essencial' ? 9.90 : 27.90;
+    const value = plan === 'essencial' ? 14.90 : 27.90;
     const eventId = uuidv4();
     const link = plan === 'essencial' 
       ? 'https://ggcheckout.app/checkout/v4/akNASSdlT23O50Jx6P0p' 
@@ -112,7 +112,10 @@ export default function App() {
   };
 
   const scrollToOffer = () => {
-    document.getElementById('oferta')?.scrollIntoView({ behavior: 'smooth' });
+    const el = document.getElementById('oferta');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   };
 
   if (isThanksPage) {
@@ -362,6 +365,14 @@ export default function App() {
                <div className="absolute -top-10 -left-10 w-32 h-32 bg-gold/20 blur-3xl rounded-full"></div>
             </div>
           </div>
+          <div className="mt-16 text-center">
+            <button 
+              onClick={scrollToOffer}
+              className="bg-gold text-void px-8 py-4 rounded-full font-bold text-xs md:text-sm uppercase tracking-widest hover:scale-105 active:scale-95 transition-all shadow-xl"
+            >
+              Quero o Plano Completo • R$ 27,90
+            </button>
+          </div>
         </div>
       </section>
 
@@ -391,7 +402,7 @@ export default function App() {
             <div className="w-full md:w-[280px] p-8 rounded-[32px] bg-white/5 border border-white/10 backdrop-blur-xl flex flex-col justify-between min-h-[380px]">
               <div>
                 <div className="text-[10px] uppercase tracking-widest opacity-60 mb-2 font-bold">ESSENCIAL</div>
-                <div className="text-3xl font-bold font-display mb-6">R$ 9,90</div>
+                <div className="text-3xl font-bold font-display mb-6">R$ 14,90</div>
                 <ul className="text-xs space-y-3 opacity-80 mb-8">
                   <li className="flex items-center gap-2">• 5 Receitas base</li>
                   <li className="flex items-center gap-2">• Tabela de Combinação</li>
@@ -543,7 +554,7 @@ export default function App() {
                onClick={scrollToOffer}
                className="bg-void text-white px-10 py-5 rounded-full text-lg font-bold uppercase tracking-widest hover:scale-105 active:scale-95 transition-all"
              >
-               Escolher meu plano
+               Quero o Plano Completo • R$ 27,90
              </button>
           </div>
         </div>
@@ -566,13 +577,12 @@ export default function App() {
             exit={{ y: 100 }}
             className="fixed bottom-6 left-6 right-6 z-50 md:hidden"
           >
-            <a 
-              href="https://ggcheckout.app/checkout/v4/w8WpOvBkzPNAtTxTOXuE"
-              onClick={(e) => { e.preventDefault(); handleCheckout('completo'); }}
+            <button 
+              onClick={scrollToOffer}
               className="w-full bg-gold text-void py-4 rounded-full font-bold shadow-2xl animate-pulse-gold flex items-center justify-center gap-2 uppercase tracking-widest text-[11px]"
             >
-              Quero o Efeito Bartender • R$ 27,90
-            </a>
+              Quero o Plano Completo • R$ 27,90
+            </button>
           </motion.div>
         )}
       </AnimatePresence>
