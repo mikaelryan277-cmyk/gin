@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { v4 as uuidv4 } from 'uuid';
 import { 
@@ -32,6 +32,56 @@ export default function App() {
   const [activeFaq, setActiveFaq] = useState<number | null>(null);
   const [showSticky, setShowSticky] = useState(false);
   const [isThanksPage, setIsThanksPage] = useState(false);
+  const [viewContentFired, setViewContentFired] = useState(false);
+  const offerRef = useRef<HTMLElement>(null);
+
+  useEffect(() => {
+    // ViewContent Observer
+    if (!isThanksPage && !viewContentFired && offerRef.current) {
+      const observer = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && !viewContentFired) {
+          const eventId = uuidv4();
+          console.log('ViewContent disparado');
+          
+          // Client-Side Pixel
+          // @ts-ignore
+          if (window.fbq) {
+            // @ts-ignore
+            window.fbq('track', 'ViewContent', {
+              content_name: 'Gin Fácil - Efeito Bartender',
+              content_category: 'Infoproduto',
+              value: 27.90,
+              currency: 'BRL'
+            }, { eventID: eventId });
+          }
+
+          // Server-Side CAPI
+          fetch('/api/meta-event', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              event_name: 'ViewContent',
+              event_id: eventId,
+              event_source_url: window.location.href,
+              user_data: { fbp: getCookie('_fbp'), fbc: getCookie('_fbc') },
+              custom_data: {
+                content_name: 'Gin Fácil - Efeito Bartender',
+                content_category: 'Infoproduto',
+                value: 27.90,
+                currency: 'BRL'
+              }
+            })
+          }).catch(console.error);
+
+          setViewContentFired(true);
+          observer.disconnect();
+        }
+      }, { threshold: 0.1 });
+
+      observer.observe(offerRef.current);
+      return () => observer.disconnect();
+    }
+  }, [isThanksPage, viewContentFired]);
 
   useEffect(() => {
     // Check for purchase redirect
@@ -390,7 +440,7 @@ export default function App() {
       </section>
 
       {/* Oferta */}
-      <section id="oferta" className="py-24 bg-void">
+      <section id="oferta" ref={offerRef} className="py-24 bg-void">
         <div className="container mx-auto px-6">
           <div className="text-center mb-16">
             <h2 className="font-display text-4xl md:text-6xl mb-4">Escolha seu nível</h2>
