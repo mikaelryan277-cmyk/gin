@@ -28,15 +28,13 @@ const getCookie = (name: string) => {
   return null;
 };
 
-// Mockup image path from generation
-const MOCKUP_IMAGE = 'https://i.imgur.com/CWGtxcY.jpeg';
-
-import imgTestimonial1 from './assets/images/testimonial_1_WinzAss.png';
-import imgTestimonial2 from './assets/images/testimonial_2_qBpveq8.png';
-import imgTestimonial3 from './assets/images/testimonial_3_86bHS0j.png';
-import imgTestimonial4 from './assets/images/testimonial_4_1p9y53X.png';
-import imgTestimonial5 from './assets/images/testimonial_5_vaNffvg.png';
-import imgBookCover from './assets/images/gin_facil_cover_book_1786123079394.jpg';
+import imgHeroMockup from './assets/images/hero_mockup.webp';
+import imgTestimonial1 from './assets/images/testimonial_1.webp';
+import imgTestimonial2 from './assets/images/testimonial_2.webp';
+import imgTestimonial3 from './assets/images/testimonial_3.webp';
+import imgTestimonial4 from './assets/images/testimonial_4.webp';
+import imgTestimonial5 from './assets/images/testimonial_5.webp';
+import imgBookCover from './assets/images/gin_facil_cover_book.webp';
 
 const TESTIMONIALS = [
   { img: imgTestimonial1, name: 'Depoimento 1', type: 'WhatsApp', alt: 'Depoimento sobre o Método Gin Fácil' },
@@ -264,8 +262,11 @@ export default function App() {
             >
               <div className="relative z-10 w-full max-w-[320px] xs:max-w-[380px] aspect-[380/480] bg-surface rounded-[32px] md:rounded-[40px] border border-white/20 shadow-2xl overflow-hidden flex flex-col items-center justify-center md:rotate-3 hover:rotate-0 transition-transform duration-700">
                 <img 
-                  src={MOCKUP_IMAGE} 
+                  src={imgHeroMockup} 
                   alt="Gin Fácil - O Efeito Bartender" 
+                  width={800}
+                  height={1192}
+                  decoding="async"
                   className="absolute inset-0 w-full h-full object-cover object-center"
                   fetchPriority="high"
                 />
@@ -332,8 +333,11 @@ export default function App() {
                 <img 
                   src={imgBookCover} 
                   alt="Capa do E-book Gin Fácil - Efeito Bartender Essencial" 
-                  className="w-full h-auto object-cover"
+                  width={800}
+                  height={1192}
+                  decoding="async"
                   loading="lazy"
+                  className="w-full h-auto object-cover"
                 />
               </div>
             </div>
@@ -453,6 +457,9 @@ export default function App() {
                 <img 
                   src={item.img} 
                   alt={item.alt}
+                  width={800}
+                  height={800}
+                  decoding="async"
                   loading="lazy"
                   referrerPolicy="no-referrer"
                   className="w-full h-auto rounded-lg border border-white/10 shadow-md"
